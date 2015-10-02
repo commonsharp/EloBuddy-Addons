@@ -30,13 +30,11 @@
             {
                 var health = Prediction.Health.GetPrediction(
                     minion,
-                    (int)(ObjectManager.Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2
-                    + 1000 * (int)ObjectManager.Player.Distance(minion)
-                    / (int)
-                      (ObjectManager.Player.CombatType == GameObjectCombatType.Melee
-                       || ObjectManager.Player.ChampionName == "Azir"
-                           ? float.MaxValue
-                           : Player.BasicAttack.MissileSpeed));
+                    (int) ((int)(ObjectManager.Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 + 1000 *
+                    (int)ObjectManager.Player.Distance(minion) /
+                    (Player.CombatType == GameObjectCombatType.Melee || Player.ChampionName == "Azir"
+                    ? float.MaxValue
+                    : Player.BasicAttack.MissileSpeed)));
 
                 var damage = ObjectManager.Player.GetAutoAttackDamage(minion, true);
                 var killable = health <= damage;
