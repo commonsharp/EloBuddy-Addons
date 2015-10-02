@@ -274,7 +274,7 @@ namespace Irelia_Buddy
                     .Where(
                         m =>
                         m.IsValidTarget()
-                        && Prediction.Health.GetPrediction(m, 1000 * (int)(m.Distance(Player) / 2200), 0)
+                        && Prediction.Health.GetPrediction(m, 1000 * (int)(m.Distance(Player) / 2200))
                         <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 10)
                     .OrderBy(m => m.Distance(gctarget))
                     .FirstOrDefault();
@@ -411,7 +411,7 @@ namespace Irelia_Buddy
                     .Where(
                         m =>
                         m.IsValidTarget()
-                        && Prediction.Health.GetPrediction(m, (int)(m.Distance(Player) / 2200), 0)
+                        && Prediction.Health.GetPrediction(m, (int)(m.Distance(Player) / 2200))
                         <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 10)
                     .OrderBy(m => m.Distance(gctarget))
                     .FirstOrDefault();
