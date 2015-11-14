@@ -17,8 +17,8 @@ namespace Irelia_Buddy
         public static Item Cutlass { get; private set; }
         public static Item Blade { get; private set; }
         public static Item Tiamat { get; private set; }
-        public static Item Hydra { get; private set; }
-
+        public static Item Hydra1 { get; private set; }
+        public static Item Hydra2 { get; private set; }
 
         public static void Initialize()
         {
@@ -27,12 +27,13 @@ namespace Irelia_Buddy
             E = new Spell.Targeted(SpellSlot.E, 350);
             R = new Spell.Skillshot(SpellSlot.R, 1200, SkillShotType.Linear, 0, 1600, 65);
 
-            Ignite = ObjectManager.Player.GetSpellSlotFromName("summonerdot");
-            Youmuu = new Item(3142, Q.Range);
-            Cutlass = new Item(3144, 450f);
-            Blade = new Item(3153, 450f);
-            Tiamat = new Item(3077, 400f);
-            Hydra = new Item(3074, 400f);
+            Ignite = Player.Instance.GetSpellSlotFromName("summonerdot");
+            Youmuu = new Item(3142, Q.Range);   //Youmuus_Ghostblade
+            Cutlass = new Item(3144, 450f);     //Bilgewater_Cutlass
+            Blade = new Item(3153, 450f);       //Blade_of_the_Ruined_King
+            Tiamat = new Item(3077, 400f);      //Tiamat_Melee_Only
+            Hydra1 = new Item(3074, 400f);      //Ravenous_Hydra
+            Hydra2 = new Item(3748, 385f);      //Titanic_Hydra
         }
     }
 }

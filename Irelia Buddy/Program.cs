@@ -48,13 +48,16 @@ namespace Irelia_Buddy
             //    };
             Orbwalker.OnPostAttack += (unit, target) =>
             {
-                if (IreliaMenu.ComboMenu["combo.items"].Cast<CheckBox>().CurrentValue && unit.IsMe && target != null && Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.Combo)
+                if (IreliaMenu.ComboMenu["combo.items"].Cast<CheckBox>().CurrentValue && target != null && Orbwalker.ActiveModesFlags == Orbwalker.ActiveModes.Combo)
                 {
                     if (Spells.Tiamat.IsReady())
                         Spells.Tiamat.Cast();
 
-                    if (Spells.Hydra.IsReady())
-                        Spells.Hydra.Cast();
+                    if (Spells.Hydra1.IsReady())
+                        Spells.Hydra1.Cast();
+
+                    if (Spells.Hydra2.IsReady())
+                        Spells.Hydra2.Cast();
                 }
             };
         }
@@ -191,7 +194,7 @@ namespace Irelia_Buddy
         {
             foreach (
                 var enemy in
-                    HeroManager.Enemies.Where(e => e.Distance(Player) <= Spells.R.Range && e.IsValidTarget() && !e.IsInvulnerable))
+                    EntityManager.Heroes.Enemies.Where(e => e.Distance(Player) <= Spells.R.Range && e.IsValidTarget() && !e.IsInvulnerable))
             {
                 if (Spells.Q.IsReady() && IreliaMenu.MiscMenu["misc.ks.q"].Cast<CheckBox>().CurrentValue &&
                     Spells.E.IsReady() && IreliaMenu.MiscMenu["misc.ks.e"].Cast<CheckBox>().CurrentValue &&
@@ -275,7 +278,7 @@ namespace Irelia_Buddy
                         m =>
                         m.IsValidTarget()
                         && Prediction.Health.GetPrediction(m, 1000 * (int)(m.Distance(Player) / 2200))
-                        <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 10)
+                        <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 11)
                     .OrderBy(m => m.Distance(gctarget))
                     .FirstOrDefault();
 
@@ -376,7 +379,7 @@ namespace Irelia_Buddy
                 }
             }
 
-            if (IreliaMenu.ComboMenu["combo.ignite"].Cast<CheckBox>().CurrentValue && target != null)
+            if (IreliaMenu.ComboMenu["combo.ignite"].Cast<CheckBox>().CurrentValue && target != null && Spells.Ignite != SpellSlot.Unknown)
             {
                 if (Player.Distance(target) <= 600 && ComboDamage(target) >= target.Health)
                     Player.Spellbook.CastSpell(Spells.Ignite, target);
@@ -412,7 +415,7 @@ namespace Irelia_Buddy
                         m =>
                         m.IsValidTarget()
                         && Prediction.Health.GetPrediction(m, (int)(m.Distance(Player) / 2200))
-                        <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 10)
+                        <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 11)
                     .OrderBy(m => m.Distance(gctarget))
                     .FirstOrDefault();
 
