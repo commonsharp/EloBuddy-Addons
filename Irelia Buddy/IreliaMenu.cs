@@ -17,6 +17,8 @@ namespace Irelia_Buddy
 
         public static Menu LaneClearMenu = IreliaMainMenu.AddSubMenu("LaneClear", "memes.laneclear");
 
+        public static Menu JungleClearMenu = IreliaMainMenu.AddSubMenu("JungleClear", "memes.jungleclear");
+
         public static Menu DrawingsMenu = IreliaMainMenu.AddSubMenu("Drawings", "memes.drawings");
 
         public static Menu MiscMenu = IreliaMainMenu.AddSubMenu("Misc", "memes.misc");
@@ -81,9 +83,18 @@ namespace Irelia_Buddy
 
             LaneClearMenu.Add("laneclear.q", new CheckBox("LaneClear Q"));
             LaneClearMenu.AddSeparator(12);
+            LaneClearMenu.Add("laneclear.w", new CheckBox("LaneClear W",false));
+            LaneClearMenu.AddSeparator(12);
             LaneClearMenu.Add("laneclear.r", new CheckBox("LaneClear R - SOON", false));
             LaneClearMenu.Add("laneclear.r.minions", new Slider("Minimum minions hit", 3, 1, 6));
             LaneClearMenu.Add("laneclear.mana", new Slider("Mana manager (%)", 40, 1));
+
+            JungleClearMenu.Add("jungleclear.q", new CheckBox("JungleClear Q"));
+            JungleClearMenu.AddSeparator(12);
+            JungleClearMenu.Add("jungleclear.w", new CheckBox("JungleClear W"));
+            JungleClearMenu.AddSeparator(12);
+            JungleClearMenu.Add("jungleclear.e", new CheckBox("JungleStun E"));
+            JungleClearMenu.Add("jungleclear.mana", new Slider("Mana manager (%)", 40, 1));
 
             DrawingsMenu.Add("drawings.q", new CheckBox("Draw Q"));
             DrawingsMenu.AddLabel("                                                                                                                                                               .", 4);
@@ -97,6 +108,7 @@ namespace Irelia_Buddy
             MiscMenu.Add("misc.ag.e", new CheckBox("Anti-Gapclose E"));
             MiscMenu.Add("misc.interrupt", new CheckBox("Stun interruptable spells"));
             MiscMenu.Add("misc.stunundertower", new CheckBox("Stun enemy with tower aggro - soon"));
+            MiscMenu.Add("misc.qminion", new Slider("Q minion clear damage calculation",-11,-20,30));
         }
     }
 }

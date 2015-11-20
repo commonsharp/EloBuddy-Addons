@@ -58,6 +58,9 @@ namespace Irelia_Buddy
 
                     if (Spells.Hydra2.IsReady())
                         Spells.Hydra2.Cast();
+
+                    if (Spells.Corruptpot.IsReady() && !Player.HasBuff("ItemDarkCrystalFlask"))
+                        Spells.Corruptpot.Cast();
                 }
             };
         }
@@ -151,7 +154,7 @@ namespace Irelia_Buddy
             }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
             {
-
+                JungleClear();
             }
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
             {
@@ -164,20 +167,24 @@ namespace Irelia_Buddy
         {
             //if (Player.ManaPercent <= IreliaMenu.LaneClearMenu["laneclear.mana"].Cast<Slider>().CurrentValue && Player.HasBuff("ireliatranscendentbladesspell") && rcount >= 1) goto castr;
             if (Player.ManaPercent <= IreliaMenu.LaneClearMenu["laneclear.mana"].Cast<Slider>().CurrentValue) return;
-
+            var minion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, Spells.Q.Range);
+            if (minion.FirstOrDefault() == null) return;
             var qminion =
-                EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, Spells.Q.Range)
-                    .FirstOrDefault(
-                        m =>
-                            m.Distance(Player) <= Spells.Q.Range &&
-                            m.Health <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 10 &&
-                            m.IsValidTarget());
+                minion.FirstOrDefault(
+                    m =>
+                        m.Distance(Player) <= Spells.Q.Range &&
+                        m.Health <= QDamage(m) + ExtraWDamage() + SheenDamage(m) + IreliaMenu.MiscMenu["misc.qminion"].Cast<Slider>().CurrentValue &&
+                        m.IsValidTarget());
 
             if (Spells.Q.IsReady() && IreliaMenu.LaneClearMenu["laneclear.q"].Cast<CheckBox>().CurrentValue && qminion != null && !Orbwalker.IsAutoAttacking)
             {
+                if(Spells.W.IsReady() && IreliaMenu.LaneClearMenu["laneclear.w"].Cast<CheckBox>().CurrentValue) Spells.W.Cast();
                 Spells.Q.Cast(qminion);
             }
-
+            if (Spells.W.IsReady() && IreliaMenu.LaneClearMenu["laneclear.w"].Cast<CheckBox>().CurrentValue && minion.FirstOrDefault(m => m.IsMinion && m.Distance(Player) <= Player.AttackRange ) != null )
+            {
+                Spells.W.Cast();
+            }
             //castr:
             //var rminions = EntityManager.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position.To2D(), Spells.R.Range);
             //if (Spells.R.IsReady() && IreliaMenu.MainMenu["laneclear.r"].Cast<CheckBox>().CurrentValue && rminions.Count != 0)
@@ -278,7 +285,7 @@ namespace Irelia_Buddy
                         m =>
                         m.IsValidTarget()
                         && Prediction.Health.GetPrediction(m, 1000 * (int)(m.Distance(Player) / 2200))
-                        <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 11)
+                        <= QDamage(m) + ExtraWDamage() + SheenDamage(m) + IreliaMenu.MiscMenu["misc.qminion"].Cast<Slider>().CurrentValue)
                     .OrderBy(m => m.Distance(gctarget))
                     .FirstOrDefault();
 
@@ -415,7 +422,7 @@ namespace Irelia_Buddy
                         m =>
                         m.IsValidTarget()
                         && Prediction.Health.GetPrediction(m, (int)(m.Distance(Player) / 2200))
-                        <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - 11)
+                        <= QDamage(m) + ExtraWDamage() + SheenDamage(m) - IreliaMenu.MiscMenu["misc.qminion"].Cast<Slider>().CurrentValue)
                     .OrderBy(m => m.Distance(gctarget))
                     .FirstOrDefault();
 
@@ -518,7 +525,38 @@ namespace Irelia_Buddy
 
         private static void JungleClear()
         {
+            if (Player.ManaPercent <= IreliaMenu.JungleClearMenu["jungleclear.mana"].Cast<Slider>().CurrentValue) return;
+            var monster = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Spells.Q.Range).Where(m => m.IsValidTarget() && m.IsMonster);
+            if (monster.FirstOrDefault() == null) return;
+            string[] Legendary = { "TT_Spiderboss", "SRU_Baron", "SRU_Dragon", "SRU_RiftHerald" };
+            var emonster = monster.Where(m => m.IsValidTarget(Spells.E.Range) && !m.Name.Contains("Mini") && !Legendary.Any(l => m.Name.StartsWith(l))).FirstOrDefault(m => Player.HealthPercent <= m.HealthPercent);
+            if (Spells.E.IsReady() && emonster != null && IreliaMenu.JungleClearMenu["jungleclear.e"].Cast<CheckBox>().CurrentValue)
+                Spells.E.Cast(emonster);
 
+            if (Spells.Q.IsReady() || Spells.W.IsReady())
+            {
+                if (IreliaMenu.JungleClearMenu["jungleclear.q"].Cast<CheckBox>().CurrentValue)
+                {
+                    var wqmonster = monster.Where(m => m.IsValidTarget(Spells.Q.Range)).FirstOrDefault(m => 75 <= m.HealthPercent);
+                    if (Spells.W.IsReady() && IreliaMenu.JungleClearMenu["jungleclear.w"].Cast<CheckBox>().CurrentValue) Spells.W.Cast();
+                    if (Spells.Q.IsReady() && wqmonster != null && !wqmonster.Name.Contains("Mini")) Spells.Q.Cast(wqmonster);
+                }
+                else if (Spells.W.IsReady() && IreliaMenu.JungleClearMenu["jungleclear.w"].Cast<CheckBox>().CurrentValue)
+                {
+                    if (monster.FirstOrDefault(m => m.IsValidTarget(Player.AttackRange)) != null) Spells.W.Cast();
+                }
+            }
+            var qmonster =
+                monster.FirstOrDefault(
+                    m =>
+                        m.Distance(Player) <= Spells.Q.Range &&
+                        m.Health <= QDamage(m) + ExtraWDamage() + SheenDamage(m) + IreliaMenu.MiscMenu["misc.qminion"].Cast<Slider>().CurrentValue &&
+                        m.IsValidTarget());
+
+            if (Spells.Q.IsReady() && IreliaMenu.JungleClearMenu["jungleclear.q"].Cast<CheckBox>().CurrentValue && qmonster != null )
+            {
+                Spells.Q.Cast(qmonster);
+            }
         }
 
 
@@ -552,6 +590,10 @@ namespace Irelia_Buddy
             foreach (var item in Player.InventoryItems)
                 switch ((int)item.Id)
                 {
+                    case 3025: //Iceborn Gauntlet
+                        if (Item.CanUseItem((int)ItemId.Iceborn_Gauntlet))
+                            result += Player.CalculateDamageOnUnit(target, DamageType.Physical, Player.BaseAttackDamage * 1.25f );
+                        break;
                     case 3057: //Sheen
                         if (Item.CanUseItem((int)ItemId.Sheen))
                             result += Player.CalculateDamageOnUnit(target, DamageType.Physical, Player.BaseAttackDamage);
@@ -562,7 +604,14 @@ namespace Irelia_Buddy
                             result += Player.CalculateDamageOnUnit(target, DamageType.Physical, Player.BaseAttackDamage * 2);
                                 //Player.GetItemDamage(target, ItemId.Trinity_Force);
                         break;
+                    case 3134: //Serrated Dirk
+                        if (Player.HasBuff("Serrated"))
+                            result += Player.CalculateDamageOnUnit(target, DamageType.Physical, 15);
+                        break;
                 }
+            if (target.GetType().ToString() == "EloBuddy.AIHeroClient")
+                if (Player.HasBuff("MasteryOnHitDamageStacker"))
+                    result += Player.CalculateDamageOnUnit(target, DamageType.Physical, new float[] { 1.32f, 1.74f, 2.16f, 2.58f, 3, 3.42f, 3.84f, 4.26f, 4.68f, 5.1f, 5.52f, 5.94f, 6.36f, 6.78f, 7.2f, 7.62f, 8.04f, 8.46f }[Player.Level - 1] * Player.GetBuffCount("MasteryOnHitDamageStacker"));
             return result;
         }
 
@@ -571,10 +620,12 @@ namespace Irelia_Buddy
             // tried some stuff with if buff == null but the damage will be enough then cast W and it worked.. but meh, idk will look at later
 
             var extra = 0d;
-            var buff = Player.Buffs.FirstOrDefault(b => b.Name == "ireliahitenstylecharged" && b.IsValid);
-            if (buff != null) // && buff.EndTime > (1000 * Player.Distance(target) / 2200))
+            //var buff = Player.Buffs.FirstOrDefault(b => b.Name == "ireliahitenstylecharged" && b.IsValid);
+            //if (buff != null) // && buff.EndTime > (1000 * Player.Distance(target) / 2200))
+            if (Player.HasBuff("ireliahitenstylecharged"))
+            {
                 extra += new double[] { 15, 30, 45, 60, 75 }[Spells.W.Level - 1];
-
+            }
             return extra;
         }
         private static double QDamage(Obj_AI_Base target)

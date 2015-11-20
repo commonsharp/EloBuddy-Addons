@@ -1,6 +1,6 @@
 ﻿using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Events;
+using EloBuddy.SDK.Menu.Values;
 
 namespace Irelia_Buddy
 {
@@ -19,12 +19,13 @@ namespace Irelia_Buddy
         public static Item Tiamat { get; private set; }
         public static Item Hydra1 { get; private set; }
         public static Item Hydra2 { get; private set; }
+        public static Item Corruptpot { get; private set; }
 
         public static void Initialize()
         {
             Q = new Spell.Targeted(SpellSlot.Q, 650);
             W = new Spell.Active(SpellSlot.W);
-            E = new Spell.Targeted(SpellSlot.E, 350);
+            E = new Spell.Targeted(SpellSlot.E, 425);
             R = new Spell.Skillshot(SpellSlot.R, 1200, SkillShotType.Linear, 0, 1600, 65);
 
             Ignite = Player.Instance.GetSpellSlotFromName("summonerdot");
@@ -34,6 +35,7 @@ namespace Irelia_Buddy
             Tiamat = new Item(3077, 400f);      //Tiamat_Melee_Only
             Hydra1 = new Item(3074, 400f);      //Ravenous_Hydra
             Hydra2 = new Item(3748, 385f);      //Titanic_Hydra
+            Corruptpot = new Item(2033, 650f);  //Corrupting_Potion
         }
     }
 }
