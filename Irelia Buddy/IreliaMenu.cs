@@ -90,6 +90,7 @@ namespace Irelia_Buddy
             LaneClearMenu.Add("laneclear.mana", new Slider("Mana manager (%)", 40, 1));
 
             JungleClearMenu.Add("jungleclear.q", new CheckBox("JungleClear Q"));
+            JungleClearMenu.Add("jungleclear.lq", new CheckBox("Always Lasthit Q",false));
             JungleClearMenu.AddSeparator(12);
             JungleClearMenu.Add("jungleclear.w", new CheckBox("JungleClear W"));
             JungleClearMenu.AddSeparator(12);

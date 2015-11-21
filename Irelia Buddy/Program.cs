@@ -535,7 +535,7 @@ namespace Irelia_Buddy
 
             if (Spells.Q.IsReady() || Spells.W.IsReady())
             {
-                if (IreliaMenu.JungleClearMenu["jungleclear.q"].Cast<CheckBox>().CurrentValue)
+                if (IreliaMenu.JungleClearMenu["jungleclear.q"].Cast<CheckBox>().CurrentValue && !IreliaMenu.JungleClearMenu["jungleclear.lq"].Cast<CheckBox>().CurrentValue)
                 {
                     var wqmonster = monster.Where(m => m.IsValidTarget(Spells.Q.Range)).FirstOrDefault(m => 75 <= m.HealthPercent);
                     if (Spells.W.IsReady() && IreliaMenu.JungleClearMenu["jungleclear.w"].Cast<CheckBox>().CurrentValue) Spells.W.Cast();
