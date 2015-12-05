@@ -45,10 +45,10 @@ namespace Irelia_Buddy
             {
                 if (!sender.IsMe) return;
                 if (eventArgs.SData.Name == Spells.E.Name)
-                    Core.DelayAction( ()=> Orbwalker.ResetAutoAttack(), 260);
+                    Core.DelayAction( ()=> Orbwalker.ResetAutoAttack(), (int)(Math.Round(Player.AttackCastDelay, 3) * 1000));
 
                 if (eventArgs.SData.Name == Spells.Q.Name)
-                    Core.DelayAction( ()=> Orbwalker.ResetAutoAttack(), 260);
+                    Core.DelayAction( ()=> Orbwalker.ResetAutoAttack(), (int)(Math.Round(Player.AttackCastDelay, 3) * 1000));
 
             };
             Orbwalker.OnPostAttack += (unit, target) =>
@@ -539,7 +539,15 @@ namespace Irelia_Buddy
             var emonster = monster.Where(m => m.IsValidTarget(Spells.E.Range) && !m.Name.Contains("Mini") && !Legendary.Any(l => m.Name.StartsWith(l))).FirstOrDefault(m => Player.HealthPercent <= m.HealthPercent);
             if (Spells.E.IsReady() && emonster != null && IreliaMenu.JungleClearMenu["jungleclear.e"].Cast<CheckBox>().CurrentValue)
                 Spells.E.Cast(emonster);
-
+            if (IreliaMenu.JungleClearMenu["jungleclear.mini"].Cast<CheckBox>().CurrentValue)
+            {
+                var mini = monster.Where(m => m.Name.Contains("Mini"));
+                if (mini.FirstOrDefault() != null)
+                {
+                    Orbwalker.ForcedTarget = mini.FirstOrDefault();
+                    monster = mini;
+                }
+            }
             if (Spells.Q.IsReady() || Spells.W.IsReady())
             {
                 if (IreliaMenu.JungleClearMenu["jungleclear.q"].Cast<CheckBox>().CurrentValue && !IreliaMenu.JungleClearMenu["jungleclear.lq"].Cast<CheckBox>().CurrentValue)

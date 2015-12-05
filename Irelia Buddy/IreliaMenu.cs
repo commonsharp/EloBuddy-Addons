@@ -96,6 +96,8 @@ namespace Irelia_Buddy
             JungleClearMenu.AddSeparator(12);
             JungleClearMenu.Add("jungleclear.e", new CheckBox("JungleStun E"));
             JungleClearMenu.Add("jungleclear.mana", new Slider("Mana manager (%)", 40, 1));
+            JungleClearMenu.AddSeparator(12);
+            JungleClearMenu.Add("jungleclear.mini", new CheckBox("Priority to mini target", false));
 
             DrawingsMenu.Add("drawings.q", new CheckBox("Draw Q"));
             DrawingsMenu.AddLabel("                                                                                                                                                               .", 4);
