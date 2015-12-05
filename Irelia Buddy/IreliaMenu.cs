@@ -85,7 +85,7 @@ namespace Irelia_Buddy
             LaneClearMenu.AddSeparator(12);
             LaneClearMenu.Add("laneclear.w", new CheckBox("LaneClear W",false));
             LaneClearMenu.AddSeparator(12);
-            LaneClearMenu.Add("laneclear.r", new CheckBox("LaneClear R - SOON", false));
+            LaneClearMenu.Add("laneclear.r", new CheckBox("LaneClear R - BETA", false));
             LaneClearMenu.Add("laneclear.r.minions", new Slider("Minimum minions hit", 3, 1, 6));
             LaneClearMenu.Add("laneclear.mana", new Slider("Mana manager (%)", 40, 1));
 

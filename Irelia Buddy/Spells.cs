@@ -26,10 +26,10 @@ namespace Irelia_Buddy
             Q = new Spell.Targeted(SpellSlot.Q, 650);
             W = new Spell.Active(SpellSlot.W);
             E = new Spell.Targeted(SpellSlot.E, 425);
-            R = new Spell.Skillshot(SpellSlot.R, 1200, SkillShotType.Linear, 0, 1600, 65);
+            R = new Spell.Skillshot(SpellSlot.R, 1200, SkillShotType.Linear, 0, 1600, 120);
 
             Ignite = Player.Instance.GetSpellSlotFromName("summonerdot");
-            Youmuu = new Item(3142, Q.Range);   //Youmuus_Ghostblade
+            Youmuu = new Item(3142, 650f);   //Youmuus_Ghostblade
             Cutlass = new Item(3144, 450f);     //Bilgewater_Cutlass
             Blade = new Item(3153, 450f);       //Blade_of_the_Ruined_King
             Tiamat = new Item(3077, 400f);      //Tiamat_Melee_Only
