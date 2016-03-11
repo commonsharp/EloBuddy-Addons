@@ -14,13 +14,13 @@ namespace ActivatorF.Summoner_Spells
 {
     internal class SummonerSpells
     {
-        private static Spell.Targeted _ignite;
-        private static Spell.Targeted _heal;
-        private static Spell.Targeted _exhaust;
-        private static Spell.Skillshot _poro;
-        private static Spell.Skillshot _snowball;
-        private static Spell.Active _barrier;
-        public static Spell.Targeted Smite;
+        private static Spell.Targeted _ignite=null;
+        private static Spell.Targeted _heal=null;
+        private static Spell.Targeted _exhaust=null;
+        private static Spell.Skillshot _poro=null;
+        private static Spell.Skillshot _snowball=null;
+        private static Spell.Active _barrier=null;
+        public static Spell.Targeted Smite=null;
         private static Menu _summonerMenu;
         private static Menu _smiteMenu;
         private static string[] SmiteNames = new[] { "s5_summonersmiteplayerganker", "itemsmiteaoe", "s5_summonersmitequick", "s5_summonersmiteduel", "summonersmite" };
@@ -35,7 +35,7 @@ namespace ActivatorF.Summoner_Spells
                 _summonerMenu.Add("comboOnlyIgnite", new CheckBox("Combo Only"));
                 _summonerMenu.Add("drawIngiteRange", new CheckBox("Draw Ignite Range"));
                 _summonerMenu.AddSeparator();
-                _ignite = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerdot"), 600);
+                _ignite = new Spell.Targeted(Player.Instance.GetSpellSlotFromName("summonerdot"), 600);
                 Game.OnTick += IgniteEvent;
                 Chat.Print("ActivatorF: Ignite Loaded.", Color.LimeGreen);
             }
@@ -51,7 +51,7 @@ namespace ActivatorF.Summoner_Spells
                         new CheckBox("Exhaust " + source.ChampionName, true));
                 }
                 _summonerMenu.AddSeparator();
-                _exhaust = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerexhaust"), 650);
+                _exhaust = new Spell.Targeted(Player.Instance.GetSpellSlotFromName("summonerexhaust"), 650);
                 Game.OnTick += ExhaustEvent;
                 Chat.Print("ActivatorF: Exhaust Loaded.", Color.OrangeRed);
             }
@@ -67,7 +67,7 @@ namespace ActivatorF.Summoner_Spells
                     _summonerMenu.Add(source.ChampionName + "heal", new CheckBox("Heal " + source.ChampionName, false));
                 }
                 _summonerMenu.AddSeparator();
-                _heal = new Spell.Targeted(ObjectManager.Player.GetSpellSlotFromName("summonerheal"), 850);
+                _heal = new Spell.Targeted(Player.Instance.GetSpellSlotFromName("summonerheal"), 850);
                 Game.OnTick += HealEvent;
                 Chat.Print("ActivatorF: Heal Loaded.", Color.Aqua);
             }
@@ -77,7 +77,7 @@ namespace ActivatorF.Summoner_Spells
                 _summonerMenu.Add("useBarrier", new CheckBox("Use Barrier"));
                 _summonerMenu.Add("comboOnlyBarrier", new CheckBox("Combo Only"));
                 _summonerMenu.AddSeparator();
-                _barrier = new Spell.Active(ObjectManager.Player.GetSpellSlotFromName("summonerbarrier"), int.MaxValue);
+                _barrier = new Spell.Active(Player.Instance.GetSpellSlotFromName("summonerbarrier"), int.MaxValue);
                 Game.OnTick += BarrierEvent;
                 Chat.Print("ActivatorF: Barrier Loaded.", Color.GreenYellow);
             }
@@ -91,7 +91,7 @@ namespace ActivatorF.Summoner_Spells
                 int rsbrange = _summonerMenu["csbrange"].Cast<Slider>().CurrentValue;
                 _summonerMenu.Add("drawSnowballRange", new CheckBox("Draw Snowball Range", true));
                 _summonerMenu.Add("drawSnowballRRange", new CheckBox("Draw REAL Snowball Range", false));
-                _snowball = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonersnowball"), (uint)rsbrange, SkillShotType.Linear, 0, 1500, 60);
+                _snowball = new Spell.Skillshot(Player.Instance.GetSpellSlotFromName("summonersnowball"), (uint)rsbrange, SkillShotType.Linear, 0, 1500, 60);
                 Game.OnTick += SnowballEvent;
                 Chat.Print("ActivatorF: Snowball Loaded.", Color.DeepSkyBlue);
             }
@@ -105,11 +105,11 @@ namespace ActivatorF.Summoner_Spells
                 int rpororange = _summonerMenu["cpororange"].Cast<Slider>().CurrentValue;
                 _summonerMenu.Add("drawPoroRange", new CheckBox("Draw Poro Throwing Range", true));
                 _summonerMenu.Add("drawPoroRRange", new CheckBox("Draw REAL Poro Throwing Range", false));
-                _poro = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonerporothrow"), (uint)rpororange, SkillShotType.Linear, 0, 1500, 60);
+                _poro = new Spell.Skillshot(Player.Instance.GetSpellSlotFromName("summonerporothrow"), (uint)rpororange, SkillShotType.Linear, 0, 1500, 60);
                 Game.OnTick += PoroEvent;
                 Chat.Print("ActivatorF: Poro Loaded.", Color.DeepSkyBlue);
             }
-            if (HasSpell("smite"))
+            if (HasSpell("summonersmite"))
             {
                 _smiteMenu = MainActivator.Menu.AddSubMenu("Smite Settings");
                 switch (Game.MapId)
@@ -120,6 +120,7 @@ namespace ActivatorF.Summoner_Spells
                         _smiteMenu.AddLabel("Epics");
                         _smiteMenu.Add("SRU_Baron", new CheckBox("Baron"));
                         _smiteMenu.Add("SRU_Dragon", new CheckBox("Dragon"));
+                        _smiteMenu.Add("SRU_RiftHerald", new CheckBox("RiftHerald", false));
                         _smiteMenu.AddLabel("Buffs");
                         _smiteMenu.Add("SRU_Blue", new CheckBox("Blue"));
                         _smiteMenu.Add("SRU_Red", new CheckBox("Red"));
@@ -149,13 +150,13 @@ namespace ActivatorF.Summoner_Spells
                 _smiteMenu.Add("useSlowSmite", new CheckBox("KS with Slow Smite"));
                 _smiteMenu.Add("comboWithDuelSmite", new CheckBox("Combo With Duel Smite"));
 
-                if (SmiteNames.Contains(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Summoner1).Name))
+                if (SmiteNames.Contains(Player.Instance.Spellbook.GetSpell(SpellSlot.Summoner1).Name))
                 {
-                    Smite = new Spell.Targeted(SpellSlot.Summoner1, 500);
+                    Smite = new Spell.Targeted(SpellSlot.Summoner1, 570);
                 }
-                if (SmiteNames.Contains(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Summoner2).Name))
+                if (SmiteNames.Contains(Player.Instance.Spellbook.GetSpell(SpellSlot.Summoner2).Name))
                 {
-                    Smite = new Spell.Targeted(SpellSlot.Summoner2, 500);
+                    Smite = new Spell.Targeted(SpellSlot.Summoner2, 570);
                 }
                 Game.OnUpdate += SmiteEvent;
                 Chat.Print("ActivatorF: Smite Loaded.", Color.Yellow);
@@ -233,13 +234,13 @@ namespace ActivatorF.Summoner_Spells
         private static void HealEvent(EventArgs args)
         {
             if (!_heal.IsReady() || Player.Instance.IsDead) return;
-            if (!_summonerMenu["useHeal"].Cast<CheckBox>().CurrentValue || _summonerMenu["comboOnlyHeal"].Cast<CheckBox>().CurrentValue &&
-                !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
+            if (!_summonerMenu["useHeal"].Cast<CheckBox>().CurrentValue || (_summonerMenu["comboOnlyHeal"].Cast<CheckBox>().CurrentValue &&
+                !Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)))
                 return;
             foreach (
                 var source in
                     from source in
-                        ObjectManager.Get<AIHeroClient>().Where(a => a.IsAlly && a.Distance(Player.Instance) < _heal.Range && !a.IsDead)
+                        EntityManager.Heroes.Allies.Where(a => a.Distance(Player.Instance) < _heal.Range && !a.IsDead)
                     where
                         (source.IsMe || _summonerMenu[source.ChampionName + "heal"].Cast<CheckBox>().CurrentValue) && source.InDanger() == true
                     select source)
@@ -376,41 +377,41 @@ namespace ActivatorF.Summoner_Spells
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (HasSpell("summonerexhaust") && _summonerMenu["drawExhaustRange"].Cast<CheckBox>().CurrentValue &&
+            if (_exhaust != null && _summonerMenu["drawExhaustRange"].Cast<CheckBox>().CurrentValue &&
                 _exhaust.IsReady())
             {
                 Circle.Draw(SharpDX.Color.OrangeRed, _exhaust.Range, Player.Instance.Position);
             }
-            if (HasSpell("summonerheal") && _summonerMenu["drawHealRange"].Cast<CheckBox>().CurrentValue &&
+            if (_heal != null && _summonerMenu["drawHealRange"].Cast<CheckBox>().CurrentValue &&
                 _heal.IsReady())
             {
                 Circle.Draw(SharpDX.Color.DeepSkyBlue, _heal.Range, Player.Instance.Position);
             }
-            if (HasSpell("smite") && _smiteMenu["drawSmiteRange"].Cast<CheckBox>().CurrentValue && _smiteMenu["smiteActive"].Cast<KeyBind>().CurrentValue)
+            if (Smite != null && _smiteMenu["drawSmiteRange"].Cast<CheckBox>().CurrentValue && _smiteMenu["smiteActive"].Cast<KeyBind>().CurrentValue)
             {
                 Circle.Draw(SharpDX.Color.Yellow, Smite.Range, Player.Instance.Position);
             }
-            if (HasSpell("summonerdot") && _summonerMenu["drawIngiteRange"].Cast<CheckBox>().CurrentValue &&
+            if (_ignite != null && _summonerMenu["drawIngiteRange"].Cast<CheckBox>().CurrentValue &&
                 _ignite.IsReady())
             {
                 Circle.Draw(SharpDX.Color.Red, _ignite.Range, Player.Instance.Position);
             }
-            if (HasSpell("summonerporothrow") && _summonerMenu["drawPoroRRange"].Cast<CheckBox>().CurrentValue &&
+            if (_poro != null && _summonerMenu["drawPoroRRange"].Cast<CheckBox>().CurrentValue &&
                 _poro.IsReady())
             {
                 Circle.Draw(SharpDX.Color.DeepSkyBlue, 2500, Player.Instance.Position);
             }
-            if (HasSpell("summonersnowball") && _summonerMenu["drawSnowballRange"].Cast<CheckBox>().CurrentValue &&
+            if (_snowball != null && _summonerMenu["drawSnowballRange"].Cast<CheckBox>().CurrentValue &&
                 _snowball.IsReady())
             {
                 Circle.Draw(SharpDX.Color.DeepSkyBlue, _snowball.Range, Player.Instance.Position);
             }
-            if (HasSpell("summonerporothrow") && _summonerMenu["drawPoroRange"].Cast<CheckBox>().CurrentValue &&
+            if (_poro != null && _summonerMenu["drawPoroRange"].Cast<CheckBox>().CurrentValue &&
                 _poro.IsReady())
             {
                 Circle.Draw(SharpDX.Color.Red, _summonerMenu["cpororange"].Cast<Slider>().CurrentValue, Player.Instance.Position);
             }
-            if (HasSpell("summonersnowball") && _summonerMenu["drawSnowballRRange"].Cast<CheckBox>().CurrentValue &&
+            if (_snowball != null && _summonerMenu["drawSnowballRRange"].Cast<CheckBox>().CurrentValue &&
                 _snowball.IsReady())
             {
                 Circle.Draw(SharpDX.Color.Red, _summonerMenu["csbrange"].Cast<Slider>().CurrentValue, Player.Instance.Position);
@@ -423,7 +424,8 @@ namespace ActivatorF.Summoner_Spells
 
         public static bool HasSpell(string s)
         {
-            return Player.Spells.FirstOrDefault(o => o.SData.Name.Contains(s)) != null;
+            return Player.Instance.GetSpellSlotFromName(s) != SpellSlot.Unknown;
+            //return Player.Spells.FirstOrDefault(o => o.SData.Name.Contains(s)) != null;
         }
 
         #endregion

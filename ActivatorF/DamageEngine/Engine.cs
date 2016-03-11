@@ -146,7 +146,7 @@ namespace ActivatorF.DamageEngine
                 {
                     foreach (var caster in Missile.Where(a => Player.Instance.IsInRange(a, 775)))
                     {
-                        Spell.Skillshot _flash = new Spell.Skillshot(ObjectManager.Player.GetSpellSlotFromName("summonerflash"), 425, SkillShotType.Linear);
+                        Spell.Skillshot _flash = new Spell.Skillshot(Player.Instance.GetSpellSlotFromName("summonerflash"), 425, SkillShotType.Linear);
                         if ((!Player.Instance.IsInRange(caster, 375) && Missile.Count > 0 && _flash.IsReady()) || (!_flash.IsReady() && Missile.Count > 0 && !Player.Instance.IsInRange(caster, 775 - Player.Instance.MoveSpeed))) return true;
                     }
                 }

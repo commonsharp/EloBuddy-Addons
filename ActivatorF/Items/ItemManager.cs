@@ -120,10 +120,10 @@ namespace ActivatorF.Items
             PotionsMenu.Add("refillpotManagerMinMeHP", new Slider("HP %", 65));
             PotionsMenu.Add("corruptpotManager", new CheckBox("Corrupt Potion"));
             PotionsMenu.Add("corruptpotManagerMinMeHP", new Slider("HP %", 60));
-            if (Player.Instance.ChampionName == champsnomana.FirstOrDefault()) PotionsMenu.Add("corruptpotManagerMinMeMana", new Slider("Mana %", 30));
+            /*if (Player.Instance.ChampionName == champsnomana.FirstOrDefault())*/ PotionsMenu.Add("corruptpotManagerMinMeMana", new Slider("Mana %", 30));
             PotionsMenu.Add("huntersPotManager", new CheckBox("Hunter's Potion"));
             PotionsMenu.Add("huntersPotManagerMinMeHP", new Slider("HP %", 60));
-            if (Player.Instance.ChampionName == champsnomana.FirstOrDefault()) PotionsMenu.Add("huntersPotManagerMinMeMana", new Slider("Mana %", 30));
+            /*if (Player.Instance.ChampionName == champsnomana.FirstOrDefault())*/ PotionsMenu.Add("huntersPotManagerMinMeMana", new Slider("Mana %", 30));
 
             Cleansers = menu.AddSubMenu("Cleansers", "cleansers");
             Cleansers.Add("useCleansers", new CheckBox("Use Cleansers"));
@@ -260,7 +260,7 @@ namespace ActivatorF.Items
 
                         if (!target.IsValidTarget() || target.Distance(Player.Instance) > item.Range || 
                         (item.MeleeOnly && !Player.Instance.IsMelee) || !menuItem.CurrentValue || menuItemMe.CurrentValue < Player.Instance.HealthPercent || menuItemEnemy.CurrentValue < target.HealthPercent) continue;
-
+                        
                         switch (item.CastType)
                         {
                             case CastType.Targeted:
@@ -318,7 +318,7 @@ namespace ActivatorF.Items
             }
             if (Cleansers["useCleansers"].Cast<CheckBox>().CurrentValue)
             {
-                if (Cleansers["mikaelsCleanser"].Cast<CheckBox>().CurrentValue && _mikael.IsReady())
+                if (_mikael.IsReady() && Cleansers["mikaelsCleanser"].Cast<CheckBox>().CurrentValue)
                 {
                     foreach (var buffInstance in Player.Instance.Buffs)
                     {
@@ -333,7 +333,7 @@ namespace ActivatorF.Items
                         }
                     }
                 }
-                if (Cleansers["mercurialScimitarCleanser"].Cast<CheckBox>().CurrentValue && _merc.IsReady())
+                if (_merc.IsReady() && Cleansers["mercurialScimitarCleanser"].Cast<CheckBox>().CurrentValue)
                 {
                     foreach (var buffInstance in Player.Instance.Buffs)
                     {
@@ -348,7 +348,7 @@ namespace ActivatorF.Items
                         }
                     }
                 }
-                if (Cleansers["quicksilverSashCleanser"].Cast<CheckBox>().CurrentValue && _qss.IsReady())
+                if (_qss.IsReady() && Cleansers["quicksilverSashCleanser"].Cast<CheckBox>().CurrentValue)
                 {
                     foreach (var buffInstance in Player.Instance.Buffs)
                     {
@@ -363,7 +363,7 @@ namespace ActivatorF.Items
                         }
                     }
                 }
-                if (Cleansers["dervishCleanser"].Cast<CheckBox>().CurrentValue && _dervish.IsReady())
+                if (_dervish.IsReady() && Cleansers["dervishCleanser"].Cast<CheckBox>().CurrentValue)
                 {
                     foreach (var buffInstance in Player.Instance.Buffs)
                     {
@@ -378,7 +378,7 @@ namespace ActivatorF.Items
                         }
                     }
                 }
-                if (Cleansers["summonerSpellCleanse"].Cast<CheckBox>().CurrentValue && Cleanse != null && Cleanse.IsReady())
+                if (Cleanse != null && Cleanse.IsReady() && Cleansers["summonerSpellCleanse"].Cast<CheckBox>().CurrentValue)
                 {
                     foreach (var buffInstance in Player.Instance.Buffs)
                     {

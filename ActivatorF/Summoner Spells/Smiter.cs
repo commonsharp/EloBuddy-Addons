@@ -9,7 +9,7 @@ namespace ActivatorF.Summoner_Spells
     {
         public static readonly string[] SmiteableUnits =
         {
-            "SRU_Red", "SRU_Blue", "SRU_Dragon", "SRU_Baron",
+            "SRU_Red", "SRU_Blue", "SRU_Dragon", "SRU_Baron", "SRU_RiftHerald",
             "SRU_Gromp", "SRU_Murkwolf", "SRU_Razorbeak",
             "SRU_Krug",  "Sru_Crab", "TT_Spiderboss",
             "TTNGolem", "TTNWolf", "TTNWraith"
@@ -19,16 +19,16 @@ namespace ActivatorF.Summoner_Spells
 
         public static void SetSmiteSlot()
         {
-            if (Smites.Contains(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Summoner1).Name))
-                SummonerSpells.Smite = new Spell.Targeted(SpellSlot.Summoner1, 500);
-            else if (Smites.Contains(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Summoner2).Name))
-                SummonerSpells.Smite = new Spell.Targeted(SpellSlot.Summoner2, 500);
+            if (Smites.Contains(Player.Instance.Spellbook.GetSpell(SpellSlot.Summoner1).Name))
+                SummonerSpells.Smite = new Spell.Targeted(SpellSlot.Summoner1, 570);
+            else if (Smites.Contains(Player.Instance.Spellbook.GetSpell(SpellSlot.Summoner2).Name))
+                SummonerSpells.Smite = new Spell.Targeted(SpellSlot.Summoner2, 570);
         }
 
 
         public static int GetSmiteDamage()
         {
-            int level = ObjectManager.Player.Level;
+            int level = Player.Instance.Level;
             int[] smitedamage =
             {
                 20*level + 370,
