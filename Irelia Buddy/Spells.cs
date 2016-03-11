@@ -26,7 +26,7 @@ namespace Irelia_Buddy
             Q = new Spell.Targeted(SpellSlot.Q, 650);
             W = new Spell.Active(SpellSlot.W);
             E = new Spell.Targeted(SpellSlot.E, 425);
-            R = new Spell.Skillshot(SpellSlot.R, 1200, SkillShotType.Linear, 0, 1600, 120);
+            R = new Spell.Skillshot(SpellSlot.R, 1200, SkillShotType.Linear, 260, 1600, 120);
 
             Ignite = Player.Instance.GetSpellSlotFromName("summonerdot");
             Youmuu = new Item(3142, 650f);   //Youmuus_Ghostblade
