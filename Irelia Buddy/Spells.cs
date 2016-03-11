@@ -20,6 +20,7 @@ namespace Irelia_Buddy
         public static Item Hydra1 { get; private set; }
         public static Item Hydra2 { get; private set; }
         public static Item Corruptpot { get; private set; }
+        public static Item Randuin { get; private set; }
 
         public static void Initialize()
         {
@@ -27,7 +28,7 @@ namespace Irelia_Buddy
             W = new Spell.Active(SpellSlot.W);
             E = new Spell.Targeted(SpellSlot.E, 425);
             R = new Spell.Skillshot(SpellSlot.R, 1200, SkillShotType.Linear, 260, 1600, 120);
-
+            //Chat.Print("init");
             Ignite = Player.Instance.GetSpellSlotFromName("summonerdot");
             Youmuu = new Item(3142, 650f);   //Youmuus_Ghostblade
             Cutlass = new Item(3144, 450f);     //Bilgewater_Cutlass
@@ -36,6 +37,7 @@ namespace Irelia_Buddy
             Hydra1 = new Item(3074, 400f);      //Ravenous_Hydra
             Hydra2 = new Item(3748, 385f);      //Titanic_Hydra
             Corruptpot = new Item(2033, 650f);  //Corrupting_Potion
+            Randuin = new Item(ItemId.Randuins_Omen, 500f); //Randuins_Omen
         }
     }
 }

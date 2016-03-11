@@ -17,7 +17,7 @@ namespace Irelia_Buddy
     {
         private static readonly AIHeroClient Player = ObjectManager.Player;
         private static int rcount;
-        private static readonly float[] FervorofBattle = { 1.32f, 1.74f, 2.16f, 2.58f, 3, 3.42f, 3.84f, 4.26f, 4.68f, 5.1f, 5.52f, 5.94f, 6.36f, 6.78f, 7.2f, 7.62f, 8.04f, 8.46f };
+        private static readonly float[] FervorofBattle = { 0.9f, 1.67f, 2.44f, 3.21f, 3.98f, 4.75f, 5.52f, 6.29f, 7.06f, 7.83f, 8.6f, 9.37f, 10.14f, 10.91f, 11.68f, 12.45f, 13.22f, 13.99f };
         private static readonly float[] QDefault = { 20, 50, 80, 110, 140 };
         private static readonly double[] WDefault = { 15, 30, 45, 60, 75 };
         private static readonly float[] EDefault = { 80, 120, 160, 200, 240 };
@@ -35,7 +35,7 @@ namespace Irelia_Buddy
             Spells.Initialize();
             Bootstrap.Init(null);
 
-            Game.OnTick += OnTick;
+            Game.OnUpdate += OnTick;
             Orbwalker.OnPreAttack += OnPreAttack;
             Drawing.OnDraw += OnDraw;
             Gapcloser.OnGapcloser += OnGapcloser;
@@ -45,10 +45,10 @@ namespace Irelia_Buddy
             {
                 if (!sender.IsMe) return;
                 if (eventArgs.SData.Name == Spells.E.Name)
-                    Core.DelayAction( ()=> Orbwalker.ResetAutoAttack(), (int)(Math.Round(Player.AttackCastDelay, 3) * 1000));
+                    Orbwalker.ResetAutoAttack();//Core.DelayAction( ()=> Orbwalker.ResetAutoAttack(), (int)(Math.Round(Player.AttackCastDelay, 3) * 1000));
 
                 if (eventArgs.SData.Name == Spells.Q.Name)
-                    Core.DelayAction( ()=> Orbwalker.ResetAutoAttack(), (int)(Math.Round(Player.AttackCastDelay, 3) * 1000));
+                    Orbwalker.ResetAutoAttack();//Core.DelayAction( ()=> Orbwalker.ResetAutoAttack(), (int)(Math.Round(Player.AttackCastDelay, 3) * 1000));
 
             };
             Orbwalker.OnPostAttack += (unit, target) =>
@@ -62,6 +62,7 @@ namespace Irelia_Buddy
                         Spells.Tiamat.Cast();
                 }
             };
+            Hacks.RenderWatermark = false;
         }
 
         static void OnInterruptableSpell(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs e)
@@ -102,6 +103,7 @@ namespace Irelia_Buddy
 
         private static void OnDraw(EventArgs args)
         {
+            //Drawing.DrawCircle(new Vector3(Player.Position.X + IreliaMenu.IreliaMainMenu["X"].Cast<Slider>().CurrentValue, Player.Position.Y + IreliaMenu.IreliaMainMenu["Y"].Cast<Slider>().CurrentValue, Player.Position.Z + IreliaMenu.IreliaMainMenu["Z"].Cast<Slider>().CurrentValue), 70, Color.Yellow);
             if (IreliaMenu.DrawingsMenu["drawings.q"].Cast<CheckBox>().CurrentValue)
             {
                 if (Spells.Q.IsReady()) new Circle { Color = Color.FloralWhite, Radius = Spells.Q.Range }.Draw(Player.Position);
@@ -124,14 +126,13 @@ namespace Irelia_Buddy
 
         private static void OnPreAttack(AttackableUnit target, Orbwalker.PreAttackArgs args)
         {
-            if (IreliaMenu.ComboMenu["combo.w"].Cast<CheckBox>().CurrentValue &&
-                Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) &&
-                target != null && target.IsValidTarget())
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) &&
+                target != null && target.Type == Player.Type && target.IsValidTarget())
             {
-                if (Spells.W.IsReady()) Spells.W.Cast();
+                if (IreliaMenu.ComboMenu["combo.w"].Cast<CheckBox>().CurrentValue && Spells.W.IsReady()) Spells.W.Cast();
                 if (IreliaMenu.ComboMenu["combo.items"].Cast<CheckBox>().CurrentValue)
                 {
-                    if (Spells.Corruptpot.IsReady() && !Player.HasBuff("ItemDarkCrystalFlask"))
+                    if (Spells.Corruptpot.IsReady() && !Player.HasBuff("ItemDarkCrystalFlask") && Player.HealthPercent <= 95)
                         Spells.Corruptpot.Cast();
                     if (Spells.Hydra2.IsReady())
                         Spells.Hydra2.Cast();
@@ -150,7 +151,9 @@ namespace Irelia_Buddy
         private static void OnTick(EventArgs args)
         {
             Killsteal();
-
+            /*if (IreliaMenu.MiscMenu["misc.items.randuin"].Cast<Slider>().CurrentValue != 0)
+                if (Spells.Randuin.IsReady() && Player.CountEnemiesInRange(500f) >= IreliaMenu.ComboMenu["combo.items.randuin"].Cast<Slider>().CurrentValue)
+                    Spells.Randuin.Cast();//Core.DelayAction(() => Spells.Randuin.Cast(), new Random(DateTime.Now.Millisecond * (int)(Game.CursorPos.X + Player.Position.Y)).Next(5, 75));*/
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
                 Combo();
@@ -167,7 +170,83 @@ namespace Irelia_Buddy
             {
                 Clear();
             }
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
+            {
+                /*foreach (var buffInstance in TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical).Buffs)
+                {
+                    Chat.Print("Type : " + buffInstance.Type.ToString());
+                    Chat.Print("Name : " + buffInstance.Name);
+                    Chat.Print("Display : " + buffInstance.DisplayName);
+                    Chat.Print("SourceName : " + buffInstance.SourceName);
+                    Chat.Print("Count : " + buffInstance.Count.ToString());
+                    //masterylordsdecreecooldown;
+                    //masterylordsdecreestacks;
+                }*/
+                Flee();
+            }
             RCount();
+        }
+
+        private static void Flee()
+        {
+            if (Spells.E.IsReady() && IreliaMenu.FleeMenu["flee.e"].Cast<CheckBox>().CurrentValue)
+            {
+                var etarget =
+                    EntityManager.Heroes.Enemies
+                        .Where(
+                            enemy =>
+                                enemy.IsValidTarget() && Player.Distance(enemy.Position) <= Spells.E.Range)
+                        .OrderBy(e => e.Distance(Player));
+
+                if (etarget.FirstOrDefault() != null)
+                    Spells.E.Cast(etarget.FirstOrDefault());
+            }
+            if (Spells.R.IsReady() && IreliaMenu.FleeMenu["flee.r"].Cast<CheckBox>().CurrentValue)
+            {
+                var rtarget =
+                    EntityManager.Heroes.Enemies
+                        .Where(
+                            enemy =>
+                                enemy.IsValidTarget() && Player.Distance(enemy.Position) <= Spells.R.Range)
+                        .OrderBy(e => e.Distance(Player));
+                if (rtarget.FirstOrDefault() == null) goto WALK;
+                var rprediction = Prediction.Position.PredictLinearMissile(rtarget.FirstOrDefault(), Spells.R.Range,
+                    Spells.R.Width, Spells.R.CastDelay, Spells.R.Speed, int.MaxValue);
+
+                Spells.R.Cast(rprediction.CastPosition);
+            }
+            if (Spells.Q.IsReady() && IreliaMenu.FleeMenu["flee.q"].Cast<CheckBox>().CurrentValue)
+            {
+                var target =
+                    EntityManager.Heroes.Enemies
+                        .Where(
+                            enemy =>
+                                enemy.IsValidTarget() && Player.Distance(enemy.Position) <= Spells.R.Range)
+                        .LastOrDefault(e => e.Distance(Player) <= Spells.R.Range);
+
+                if (target == null) goto WALK;
+                
+                var qminion = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Game.CursorPos, Spells.Q.Range)
+                    .Where(
+                        m =>
+                        m.IsValidTarget() &&
+                        m.Distance(target) > Player.Distance(target))
+                    .FirstOrDefault(m => m.Distance(Player) <= Spells.Q.Range);
+                var qmonster = EntityManager.MinionsAndMonsters.GetJungleMonsters(Game.CursorPos, Spells.Q.Range)
+                    .Where(
+                        m =>
+                        m.IsValidTarget() &&
+                        m.Distance(target) > Player.Distance(target))
+                    .FirstOrDefault(m => m.Distance(Player) <= Spells.Q.Range);
+                if (qminion != null && qmonster != null)
+                    Spells.Q.Cast(qminion.Distance(Player) <= qmonster.Distance(Player) ? qmonster : qminion);
+                else if (qminion != null)
+                    Spells.Q.Cast(qminion);
+                else if (qmonster != null)
+                    Spells.Q.Cast(qmonster);
+            }
+            WALK:
+            Orbwalker.MoveTo(Game.CursorPos);
         }
 
         private static void Clear()
@@ -192,7 +271,7 @@ namespace Irelia_Buddy
             {
                 Spells.W.Cast();
             }
-            castr:
+            castr: //왜일까 goto 대신 if로 대체하고 return 처리하니까 밑의 로직이 실행안됨
             var rminions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.ServerPosition, Spells.R.Range);
             if (Spells.R.IsReady() && IreliaMenu.LaneClearMenu["laneclear.r"].Cast<CheckBox>().CurrentValue && rminions.ToList().Count != 0)
             {
@@ -285,7 +364,7 @@ namespace Irelia_Buddy
             var gctarget = TargetSelector.GetTarget(Spells.Q.Range * 2.5f, DamageType.Physical);
             var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
             if (gctarget == null) return;
-
+            if (!target.IsValidTarget()) return;
             var qminion =
                 EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.ServerPosition, Spells.Q.Range + 350)
                     .Where(
@@ -422,7 +501,7 @@ namespace Irelia_Buddy
             var gctarget = TargetSelector.GetTarget(Spells.Q.Range * 2.5f, DamageType.Physical);
             var target = TargetSelector.GetTarget(Spells.Q.Range, DamageType.Physical);
             if (gctarget == null) return;
-
+            if (!target.IsValidTarget()) return;
             var qminion =
                 EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.ServerPosition, Spells.Q.Range + 350)
                     .Where(
@@ -542,7 +621,7 @@ namespace Irelia_Buddy
             if (IreliaMenu.JungleClearMenu["jungleclear.mini"].Cast<CheckBox>().CurrentValue)
             {
                 var mini = monster.Where(m => m.Name.Contains("Mini"));
-                if (mini.FirstOrDefault() != null)
+                if (mini.FirstOrDefault(m => m.Distance(Player) <= Player.AttackRange ) != null)
                 {
                     Orbwalker.ForcedTarget = mini.FirstOrDefault();
                     monster = mini;
@@ -625,8 +704,8 @@ namespace Irelia_Buddy
                         break;
                 }
             if (target.GetType().ToString() == "EloBuddy.AIHeroClient")
-                if (Player.HasBuff("MasteryOnHitDamageStacker"))
-                    result += Player.CalculateDamageOnUnit(target, DamageType.Physical, /*(0.9f + 0.42f * Player.Level)*/FervorofBattle[Player.Level - 1] * Player.GetBuffCount("MasteryOnHitDamageStacker"));
+                if (Player.HasBuff("MasteryOnHitDamageStacker")) //Rip 5.24 (0.9f + 0.42f * Player.Level), Now 6.1 (1.04f + 6.16f * Player.Level) 
+                    result += Player.CalculateDamageOnUnit(target, DamageType.Physical, FervorofBattle[Player.Level - 1] * Player.GetBuffCount("MasteryOnHitDamageStacker"));
             return result;
         }
 

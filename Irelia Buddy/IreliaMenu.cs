@@ -23,6 +23,8 @@ namespace Irelia_Buddy
 
         public static Menu MiscMenu = IreliaMainMenu.AddSubMenu("Misc", "memes.misc");
 
+        public static Menu FleeMenu = IreliaMainMenu.AddSubMenu("Flee", "memes.flee");
+
         public static void Initialize()
         {
             ComboMenu.AddGroupLabel("COMBO");
@@ -112,6 +114,11 @@ namespace Irelia_Buddy
             MiscMenu.Add("misc.interrupt", new CheckBox("Stun interruptable spells"));
             MiscMenu.Add("misc.stunundertower", new CheckBox("Stun enemy with tower aggro - soon"));
             MiscMenu.Add("misc.qminion", new Slider("Q minion clear damage calculation",-11,-20,30));
+            //MiscMenu.Add("misc.items.randuin", new Slider("Use randuin count enemies in range", 2, 1, 6));
+
+            FleeMenu.Add("flee.q", new CheckBox("Flee Q"));
+            FleeMenu.Add("flee.e", new CheckBox("Flee E"));
+            FleeMenu.Add("flee.r", new CheckBox("Flee R"));
         }
     }
 }
