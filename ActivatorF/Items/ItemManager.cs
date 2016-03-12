@@ -27,7 +27,12 @@ namespace ActivatorF.Items
             {BuffType.Slow, "slowActivator"},
             {BuffType.Knockup, "knockupActivator"},
             {BuffType.Taunt, "tauntActivator"},
-            {BuffType.Fear, "fearActivator"}
+            {BuffType.Fear, "fearActivator"},
+            {BuffType.Suppression, "suppressionActivator" },
+            {BuffType.Blind, "blindActivator" },
+            {BuffType.Silence, "silenceActivator" },
+            {BuffType.Charm, "charm" },
+            {BuffType.Poison, "poison" }
         };
 
         public static Item[] Items =
@@ -134,14 +139,19 @@ namespace ActivatorF.Items
             Cleansers.Add("knockupActivator", new CheckBox("Knock-up"));
             Cleansers.Add("fearActivator", new CheckBox("Fear"));
             Cleansers.Add("rootActivator", new CheckBox("Root"));
-            Cleansers.Add("slowActivator", new CheckBox("Slow"));
+            Cleansers.Add("suppressionActivator", new CheckBox("Suppression"));
+            Cleansers.Add("charmActivator", new CheckBox("Charm"));
+            Cleansers.Add("poisonActivator", new CheckBox("Poison",false));
+            Cleansers.Add("blindActivator", new CheckBox("Blind",false));
+            Cleansers.Add("silenceActivator", new CheckBox("Silence", false));
+            Cleansers.Add("slowActivator", new CheckBox("Slow",false));
             Cleansers.AddSeparator();
             Cleansers.AddLabel("Cleanse Items / Summoner Spell");
             Cleansers.Add("cleanserscombo", new CheckBox("Combo Only", false));
             Cleansers.Add("mikaelsCleanser", new CheckBox("Mikael's Cruicble"));
             Cleansers.Add("mercurialScimitarCleanser", new CheckBox("Mercurial Scimitar"));
             Cleansers.Add("quicksilverSashCleanser", new CheckBox("Quicksilver Sash"));
-            if (Game.MapId == GameMapId.CrystalScar)
+            if (Game.MapId == GameMapId.HowlingAbyss)
                 Cleansers.Add("dervishCleanser", new CheckBox("Dervish Blade"));
             Cleansers.Add("summonerSpellCleanse", new CheckBox("Summoner Cleanse"));
             Cleansers.AddSeparator();
