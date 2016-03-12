@@ -151,7 +151,7 @@ namespace ActivatorF.Items
             Cleansers.Add("mikaelsCleanser", new CheckBox("Mikael's Cruicble"));
             Cleansers.Add("mercurialScimitarCleanser", new CheckBox("Mercurial Scimitar"));
             Cleansers.Add("quicksilverSashCleanser", new CheckBox("Quicksilver Sash"));
-            if (Game.MapId == GameMapId.HowlingAbyss)
+            if (Game.MapId == GameMapId.HowlingAbyss || Game.MapId == GameMapId.CrystalScar)
                 Cleansers.Add("dervishCleanser", new CheckBox("Dervish Blade"));
             Cleansers.Add("summonerSpellCleanse", new CheckBox("Summoner Cleanse"));
             Cleansers.AddSeparator();
@@ -178,9 +178,9 @@ namespace ActivatorF.Items
             DefenceMenu.Add("Face_of_the_Mountain_self", new CheckBox("Self"));
 
             DefenceMenu.AddGroupLabel("Cleanse Items (Dangerous Spells)");
-            DefenceMenu.Add("Quicksilver_Sash", new CheckBox("Quicksilver Sash"));
-            DefenceMenu.Add("Dervish_Blade", new CheckBox("Dervish Blade"));
-            DefenceMenu.Add("Mercurial_Scimitar", new CheckBox("Mercurial Scimitar"));
+            DefenceMenu.Add("Quicksilver_Sash", new CheckBox("Quicksilver Sash",false));
+            DefenceMenu.Add("Dervish_Blade", new CheckBox("Dervish Blade",false));
+            DefenceMenu.Add("Mercurial_Scimitar", new CheckBox("Mercurial Scimitar",false));
             DefenceMenu.Add("Mikaels_Crucible_Cleanse", new CheckBox("Mikaels Crucible"));
 
             DefenceMenu.AddGroupLabel("Zhonyas Items");
@@ -231,7 +231,7 @@ namespace ActivatorF.Items
             #region Defence
             foreach (var ally in EntityManager.Heroes.Allies)
             {
-                if (Player.Instance.InDanger() == true && !Player.Instance.IsInShopRange() && !Player.Instance.IsDead)
+                if (Player.Instance.InDanger() && !Player.Instance.IsInShopRange() && !Player.Instance.IsDead)
                 {
                     if (DefenceMenu["Seraphs_Embrace"].Cast<CheckBox>().CurrentValue && _seraphs.IsReady()) _seraphs.Cast();
                     if (DefenceMenu["Mikaels_Crucible_Heal"].Cast<CheckBox>().CurrentValue && _mikael.IsReady()) _mikael.Cast();
@@ -240,12 +240,12 @@ namespace ActivatorF.Items
                     if (DefenceMenu["Wooglets_Witchcap"].Cast<CheckBox>().CurrentValue && _wooglets.IsReady()) _wooglets.Cast();
                 }
 
-                if (ally.InDanger() == true && !ally.IsInShopRange() && !ally.IsDead && ally.IsTargetable)
+                if (ally.InDanger() && !ally.IsInShopRange() && !ally.IsDead && ally.IsTargetable)
                 {
                     if (DefenceMenu["Locket_of_the_Iron_Solari"].Cast<CheckBox>().CurrentValue && _lotis.IsReady() && DefenceMenu["Locket_of_the_Iron_Solari_ally"].Cast<CheckBox>().CurrentValue) _lotis.Cast(ally);
                     if (DefenceMenu["Face_of_the_Mountain"].Cast<CheckBox>().CurrentValue && _fotm.IsReady() && DefenceMenu["Face_of_the_Mountain_ally"].Cast<CheckBox>().CurrentValue) _fotm.Cast(ally);
                 }
-                if (Player.Instance.InMissileDanger() == true && !Player.Instance.IsInShopRange() && !Player.Instance.IsDead)
+                if (Player.Instance.InMissileDanger() && !Player.Instance.IsInShopRange() && !Player.Instance.IsDead)
                 {
                     if (DefenceMenu["Seraphs_Embrace"].Cast<CheckBox>().CurrentValue && _seraphs.IsReady()) _seraphs.Cast();
                     if (DefenceMenu["Mikaels_Crucible_Heal"].Cast<CheckBox>().CurrentValue && _mikael.IsReady()) _mikael.Cast();
@@ -334,14 +334,14 @@ namespace ActivatorF.Items
                     {
                         if (BuffTypes.ContainsKey(buffInstance.Type) && Cleansers[BuffTypes[buffInstance.Type]].Cast<CheckBox>().CurrentValue)
                             Core.DelayAction(() => _mikael.Cast(), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
-                    }
+                    }/*
                     foreach (var dangerousSpell in DangerousSpells.Spells.Where(a => EntityManager.Heroes.Enemies.Any(b => b.Hero == a.Champion)))
                     {
                         if (DefenceMenu[dangerousSpell.Champion.ToString() + dangerousSpell.Slot].Cast<CheckBox>().CurrentValue && dangerousSpell.IsCleanseable)
                         {
                             Core.DelayAction(() => _mikael.Cast(), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
                         }
-                    }
+                    }*/
                 }
                 if (_merc.IsReady() && Cleansers["mercurialScimitarCleanser"].Cast<CheckBox>().CurrentValue)
                 {
@@ -349,14 +349,14 @@ namespace ActivatorF.Items
                     {
                         if (BuffTypes.ContainsKey(buffInstance.Type) && Cleansers[BuffTypes[buffInstance.Type]].Cast<CheckBox>().CurrentValue)
                             Core.DelayAction(() => _merc.Cast(), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
-                    }
+                    }/*
                     foreach (var dangerousSpell in DangerousSpells.Spells.Where(a => EntityManager.Heroes.Enemies.Any(b => b.Hero == a.Champion)))
                     {
                         if (DefenceMenu[dangerousSpell.Champion.ToString() + dangerousSpell.Slot].Cast<CheckBox>().CurrentValue && dangerousSpell.IsCleanseable)
                         {
                             Core.DelayAction(() => _merc.Cast(), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
                         }
-                    }
+                    }*/
                 }
                 if (_qss.IsReady() && Cleansers["quicksilverSashCleanser"].Cast<CheckBox>().CurrentValue)
                 {
@@ -364,14 +364,14 @@ namespace ActivatorF.Items
                     {
                         if (BuffTypes.ContainsKey(buffInstance.Type) && Cleansers[BuffTypes[buffInstance.Type]].Cast<CheckBox>().CurrentValue)
                             Core.DelayAction(() => _qss.Cast(), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
-                    }
+                    }/*
                     foreach (var dangerousSpell in DangerousSpells.Spells.Where(a => EntityManager.Heroes.Enemies.Any(b => b.Hero == a.Champion)))
                     {
                         if (DefenceMenu[dangerousSpell.Champion.ToString() + dangerousSpell.Slot].Cast<CheckBox>().CurrentValue && dangerousSpell.IsCleanseable)
                         {
                             Core.DelayAction(() => _qss.Cast(), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
                         }
-                    }
+                    }*/
                 }
                 if (_dervish.IsReady() && Cleansers["dervishCleanser"].Cast<CheckBox>().CurrentValue)
                 {
@@ -379,14 +379,14 @@ namespace ActivatorF.Items
                     {
                         if (BuffTypes.ContainsKey(buffInstance.Type) && Cleansers[BuffTypes[buffInstance.Type]].Cast<CheckBox>().CurrentValue)
                             Core.DelayAction(() => _dervish.Cast(), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
-                    }
+                    }/*
                     foreach (var dangerousSpell in DangerousSpells.Spells.Where(a => EntityManager.Heroes.Enemies.Any(b => b.Hero == a.Champion)))
                     {
                         if (DefenceMenu[dangerousSpell.Champion.ToString() + dangerousSpell.Slot].Cast<CheckBox>().CurrentValue && dangerousSpell.IsCleanseable)
                         {
                             Core.DelayAction(() => _dervish.Cast(), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
                         }
-                    }
+                    }*/
                 }
                 if (Cleanse != null && Cleanse.IsReady() && Cleansers["summonerSpellCleanse"].Cast<CheckBox>().CurrentValue)
                 {
@@ -397,14 +397,14 @@ namespace ActivatorF.Items
                             if (BuffTypes.ContainsKey(buffInstance.Type) && Cleansers[BuffTypes[buffInstance.Type]].Cast<CheckBox>().CurrentValue)
                                 Core.DelayAction(() => Player.CastSpell(Cleanse.Slot), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
                         }
-                    }
+                    }/*
                     foreach (var dangerousSpell in DangerousSpells.Spells.Where(a => EntityManager.Heroes.Enemies.Any(b => b.Hero == a.Champion)))
                     {
                         if (DefenceMenu[dangerousSpell.Champion.ToString() + dangerousSpell.Slot].Cast<CheckBox>().CurrentValue && dangerousSpell.IsCleanseable)
                         {
                             Core.DelayAction(() => Player.CastSpell(Cleanse.Slot), Cleansers["qsshuman"].Cast<Slider>().CurrentValue);
                         }
-                    }
+                    }*/
                 }
             }
         }

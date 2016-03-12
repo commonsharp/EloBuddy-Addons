@@ -36,7 +36,7 @@ namespace MainMenuActivator
             Menu.AddLabel("Version: 2016.03.11" /*+ version*/, 30);
             ItemManager.Init();
             SummonerSpells.Init();
-            Engine.Init();
+            Engine.Init(); //Hacks.DisableTextures = true;
         }
     }
 }

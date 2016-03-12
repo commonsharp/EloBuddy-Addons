@@ -27,7 +27,7 @@ namespace ActivatorF.DamageEngine
         public static List<MissileClient> Missile = new List<MissileClient>();
 
         public static int LastSpellCast;
-        public static GameObject miss;
+        //public static GameObject miss;
 
         public static void Init()
         {
@@ -47,7 +47,7 @@ namespace ActivatorF.DamageEngine
             DamageEngine.Add("ConsiderAttacks", new CheckBox("Consider Basic Attacks"));
             DamageEngine.Add("ConsiderMinions", new CheckBox("Consider Non-Champions"));
             DamageEngine.AddGroupLabel("Missile Check (BETA - TESTING)");
-            DamageEngine.Add("missilecheck", new CheckBox("Enable Missile Check"));
+            DamageEngine.Add("missilecheck", new CheckBox("Enable Missile Check",false));
             DamageEngine.AddSeparator(-5);
             DamageEngine.Add("missilerun", new CheckBox("Only use Items if can run away", false));
             DamageEngine.AddLabel("Only if you can Flash out or can run out of missile range, defence items will be active. It needs more logic so don't tick unless you want to try.");
@@ -132,9 +132,9 @@ namespace ActivatorF.DamageEngine
                 if (target.HealthPercent <= DamageEngine["HPDangerSlider"].Cast<Slider>().CurrentValue)
                 {
                     if (target.CountEnemiesInRange(DamageEngine["EnemiesDangerRange"].Cast<Slider>().CurrentValue) >= DamageEngine["EnemiesDangerSlider"].Cast<Slider>().CurrentValue) return true;
-                    else return false;
+                    //else return false;
                 }
-                else return false;
+                //else return false;
             }
             return false;
         }
