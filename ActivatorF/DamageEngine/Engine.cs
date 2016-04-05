@@ -61,14 +61,14 @@ namespace ActivatorF.DamageEngine
         private static void GameObject_OnDelete(GameObject sender, EventArgs args)
         {
             var caster = sender as MissileClient;
-            if (caster == null || !caster.Target.IsMe) return;
+            if (caster == null || caster.Target.NetworkId != Player.Instance.NetworkId ) return;
             Missile.Remove(caster);
         }
 
         private static void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
             var caster = sender as MissileClient;
-            if (caster == null || !caster.Target.IsMe) return;
+            if (caster == null || caster.Target.NetworkId != Player.Instance.NetworkId ) return;
             Missile.Add(caster);
         }
 

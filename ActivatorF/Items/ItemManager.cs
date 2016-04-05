@@ -28,6 +28,7 @@ namespace ActivatorF.Items
             {BuffType.Knockup, "knockupActivator"},
             {BuffType.Taunt, "tauntActivator"},
             {BuffType.Fear, "fearActivator"},
+            {BuffType.Flee, "fleeActivator"},
             {BuffType.Suppression, "suppressionActivator" },
             {BuffType.Blind, "blindActivator" },
             {BuffType.Silence, "silenceActivator" },
@@ -138,6 +139,7 @@ namespace ActivatorF.Items
             Cleansers.Add("tauntActivator", new CheckBox("Taunt"));
             Cleansers.Add("knockupActivator", new CheckBox("Knock-up"));
             Cleansers.Add("fearActivator", new CheckBox("Fear"));
+            Cleansers.Add("fleeActivator", new CheckBox("Flee"));
             Cleansers.Add("rootActivator", new CheckBox("Root"));
             Cleansers.Add("suppressionActivator", new CheckBox("Suppression"));
             Cleansers.Add("charmActivator", new CheckBox("Charm"));
